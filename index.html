@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="AKHAFIN - Aplikasi Pencatat Keuangan, Arus Kas (Cashflow), Sisa Saldo & Total Saldo di Setiap Bank dan E-Wallet">
+  
+  <!-- PWA & Mobile Meta Tags -->
+  <meta name="theme-color" content="#2563eb">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AKHAFIN">
+  
+  <!-- Manifest & Icons -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  
+  <title>AKHAFIN - Pencatat Keuangan & Cashflow Multi-Wallet</title>
+  
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Netlify Branding & Drawer Suppressor -->
+  <script>
+    (function() {
+      window.netlifyDrawerDisabled = true;
+      function removeNetlifyElements() {
+        var selectors = [
+          '#netlify-drawer',
+          '#netlify-badge',
+          '.netlify-badge',
+          '[data-netlify-drawer]',
+          '[data-netlify-badge]',
+          '[id*="netlify" i]',
+          '[class*="netlify" i]',
+          'a[href*="netlify.com" i]',
+          'a[href*="netlify.app" i]',
+          'iframe[src*="netlify" i]'
+        ];
+        selectors.forEach(function(sel) {
+          try {
+            document.querySelectorAll(sel).forEach(function(el) {
+              el.remove();
+            });
+          } catch(e) {}
+        });
+      }
+      removeNetlifyElements();
+      document.addEventListener('DOMContentLoaded', removeNetlifyElements);
+      window.addEventListener('load', removeNetlifyElements);
+      if (typeof MutationObserver !== 'undefined') {
+        var observer = new MutationObserver(function() {
+          removeNetlifyElements();
+        });
+        observer.observe(document.documentElement, { childList: true, subtree: true });
+      }
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- Print Only Header -->
+  <div class="print-only-header">
+    <h1 style="font-size: 24px; margin-bottom: 4px;">AKHAFIN - Laporan Keuangan & Cashflow</h1>
+    <p style="color: #666; font-size: 13px;">Dicetak pada: <span id="print-date"></span></p>
+    <hr style="margin: 12px 0;">
+  </div>
+
+  <!-- Main Sticky Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <!-- Logo & Brand -->
+      <a href="#" class="brand-wrapper" onclick="window.akhaApp.switchTab('dashboard'); return false;">
+        <div class="brand-logo-icon" style="background: none; box-shadow: none; padding: 0;">
+          <img src="icon-192.png" alt="AKHAFIN Digital Logo" style="width: 44px; height: 44px; border-radius: 12px; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35); object-fit: cover;">
+        </div>
+        <div class="brand-info">
+          <span class="brand-title">AKHAFIN</span>
+          <span class="brand-subtitle">Smart Cashflow & Wallet</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Tabs -->
+      <nav class="main-nav" aria-label="Navigasi Utama">
+        <button class="nav-item active" data-tab="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-tab="accounts">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+          <span>Bank & E-Wallet</span>
+        </button>
+        <button class="nav-item" data-tab="transactions">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+          <span>Mutasi Cashflow</span>
+        </button>
+        <button class="nav-item" data-tab="analytics">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <span>Laporan</span>
+        </button>
+        <button class="nav-item" data-tab="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Backup</span>
+        </button>
+      </nav>
+
+      <!-- Action Tools -->
+      <div class="header-actions">
+        <!-- Upgrade PRO Button -->
+        <button id="btn-header-pro" class="btn-upgrade-pro" onclick="window.akhaApp.openProModal()" title="Berlangganan AKHAFIN PRO">
+          <span>👑</span>
+          <span id="header-pro-text">Upgrade PRO</span>
+        </button>
+
+        <!-- Install PWA Button (Header) -->
+        <button id="btn-header-install" class="btn-install-header" onclick="window.akhaApp.handleInstallClick()" title="Install ke HP / Tablet">
+          <span>📲</span>
+          <span>Install di HP</span>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button id="btn-toggle-theme" class="icon-btn" title="Ganti Mode Gelap/Terang" aria-label="Toggle Theme">
+          <span id="theme-toggle-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </span>
+        </button>
+
+        <!-- Quick Add Tx Button -->
+        <button id="btn-quick-add-tx" class="btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>Catat Transaksi</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main View Container -->
+  <main class="app-container">
+
+    <!-- PWA Install Notice Banner (Mobile & Desktop) -->
+    <div id="pwa-install-banner" class="pwa-install-banner">
+      <div class="pwa-banner-left">
+        <div class="pwa-banner-icon">
+          <img src="icon-192.png" alt="AKHAFIN Logo">
+        </div>
+        <div class="pwa-banner-text">
+          <h4>Pasang Aplikasi AKHAFIN di HP & Tablet</h4>
+          <p>Bisa dibuka langsung dari Layar Utama (Home Screen), layar penuh, dan bekerja cepat tanpa internet!</p>
+        </div>
+      </div>
+      <div class="pwa-banner-actions">
+        <button class="btn-pwa-guide" onclick="window.akhaApp.openInstallGuideModal()">Panduan HP</button>
+        <button id="btn-banner-install" class="btn-pwa-install" onclick="window.akhaApp.handleInstallClick()">
+          <span>📲 Pasang Sekarang</span>
+        </button>
+        <button onclick="document.getElementById('pwa-install-banner').style.display='none'" style="background:none; border:none; color:#cbd5e1; cursor:pointer; padding:4px;" title="Tutup">✕</button>
+      </div>
+    </div>
+
+    <!-- ======================================================================
+         SECTION 1: DASHBOARD
+         ====================================================================== -->
+    <section id="section-dashboard" class="tab-content-section">
+      <!-- 4 High-Level Metric Cards -->
+      <div class="stats-grid">
+        <!-- 1. Total Saldo Keseluruhan -->
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Total Saldo Seluruh Akun</span>
+            <div class="stat-icon total">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+            </div>
+          </div>
+          <div class="stat-value" id="stat-total-balance">Rp 0</div>
+          <div class="stat-footer">
+            <span>Bank, E-Wallet & Tunai</span>
+            <button class="wallet-history-link" onclick="window.akhaApp.switchTab('accounts')">Lihat Akun ➔</button>
+          </div>
+        </div>
+
+        <!-- 2. Pemasukan Bulan Ini -->
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Pemasukan Bulan Ini</span>
+            <div class="stat-icon income">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+            </div>
+          </div>
+          <div class="stat-value" id="stat-monthly-income" style="color: var(--income);">Rp 0</div>
+          <div class="stat-footer">
+            <span>Kas Masuk Periode Ini</span>
+            <span class="stat-badge badge-surplus">+ Income</span>
+          </div>
+        </div>
+
+        <!-- 3. Pengeluaran Bulan Ini -->
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Pengeluaran Bulan Ini</span>
+            <div class="stat-icon expense">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+            </div>
+          </div>
+          <div class="stat-value" id="stat-monthly-expense" style="color: var(--expense);">Rp 0</div>
+          <div class="stat-footer">
+            <span>Total Beban & Belanja</span>
+            <span class="stat-badge badge-deficit">- Expense</span>
+          </div>
+        </div>
+
+        <!-- 4. Arus Kas Bersih (Net Cashflow) -->
+        <div class="stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Arus Kas Bersih (Net)</span>
+            <div class="stat-icon cashflow">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+            </div>
+          </div>
+          <div class="stat-value" id="stat-net-cashflow">Rp 0</div>
+          <div class="stat-footer">
+            <span>Pemasukan - Pengeluaran</span>
+            <span id="stat-cashflow-badge" class="stat-badge badge-surplus">Surplus</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Visual Charts Row -->
+      <div class="dashboard-grid-2">
+        <!-- Cashflow History Chart -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <h2 class="section-title">Tren Arus Kas (Cashflow)</h2>
+              <p style="font-size: 0.8rem; color: var(--text-muted);">Perbandingan Pemasukan & Pengeluaran 6 Bulan Terakhir</p>
+            </div>
+          </div>
+          <div class="chart-canvas-container">
+            <canvas id="cashflow-chart-canvas" class="custom-chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Expense Category Donut Chart -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <h2 class="section-title">Alokasi Pengeluaran</h2>
+              <p style="font-size: 0.8rem; color: var(--text-muted);">Berdasarkan Kategori Bulan Ini</p>
+            </div>
+          </div>
+          <div class="chart-canvas-container">
+            <canvas id="expense-category-canvas" class="custom-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Summary Row: Recent Transactions & Budgeting -->
+      <div class="dashboard-grid-2">
+        <div class="section-wrapper" style="margin-bottom: 0;">
+          <div class="section-header">
+            <div class="section-title-wrap">
+              <h2 class="section-title">Transaksi Terkini</h2>
+              <span class="section-counter">Terbaru</span>
+            </div>
+            <button class="btn-secondary btn-sm" onclick="window.akhaApp.switchTab('transactions')">
+              Semua ➔
+            </button>
+          </div>
+          <div class="chart-card" style="padding: 0.5rem 1.25rem;">
+            <div id="recent-tx-list"></div>
+          </div>
+        </div>
+
+        <!-- Budgeting Widget (Fitur PRO) -->
+        <div class="section-wrapper" style="margin-bottom: 0;">
+          <div class="section-header">
+            <div class="section-title-wrap">
+              <h2 class="section-title">Anggaran &amp; Limit Kategori</h2>
+              <span id="budget-badge-status" class="section-counter" style="background: rgba(245,158,11,0.15); color: #f59e0b;">PRO Feature</span>
+            </div>
+            <button class="wallet-history-link" onclick="window.akhaApp.openProModal()">
+              Kelola ➔
+            </button>
+          </div>
+          <div class="chart-card" id="budget-widget-container">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SECTION 2: BANK & E-WALLET
+         ====================================================================== -->
+    <section id="section-accounts" class="tab-content-section" style="display: none;">
+      <!-- Aggregate Banner -->
+      <div class="wallet-summary-banner">
+        <div>
+          <span style="font-size: 0.85rem; color: #94a3b8; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;">Total Saldo Terkonsolidasi</span>
+          <div style="font-size: 2.2rem; font-weight: 800; color: #ffffff;" id="banner-total-sum">Rp 0</div>
+          <p style="font-size: 0.85rem; color: #cbd5e1; margin-top: 0.25rem;">Semua saldo aktif di rekening bank, dompet digital & tunai</p>
+        </div>
+        <div class="summary-breakdown">
+          <div class="breakdown-item">
+            <span class="breakdown-label">🏦 Rekening Bank</span>
+            <span class="breakdown-value" id="banner-bank-sum">Rp 0</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="breakdown-label">📱 E-Wallet Digital</span>
+            <span class="breakdown-value" id="banner-ewallet-sum">Rp 0</span>
+          </div>
+          <div class="breakdown-item">
+            <span class="breakdown-label">💵 Kas & Tunai</span>
+            <span class="breakdown-value" id="banner-cash-sum">Rp 0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Header & Filter Chips -->
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <h2 class="section-title">Daftar Rekening & Dompet</h2>
+          <span id="accounts-count-badge" class="section-counter">0 Akun</span>
+        </div>
+        <button id="btn-quick-add-acc" class="btn-primary" onclick="window.akhaApp.openAddAccountModal()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>Tambah Rekening / E-Wallet</span>
+        </button>
+      </div>
+
+      <!-- Filter Category Chips -->
+      <div class="accounts-filter-bar">
+        <button class="filter-chip active" data-filter="all">Semua Akun</button>
+        <button class="filter-chip" data-filter="bank">🏦 Bank Saja</button>
+        <button class="filter-chip" data-filter="ewallet">📱 E-Wallet Saja</button>
+        <button class="filter-chip" data-filter="cash">💵 Tunai Saja</button>
+      </div>
+
+      <!-- Account Cards Grid -->
+      <div id="accounts-grid" class="accounts-grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SECTION 3: MUTASI & TRANSAKSI CASHFLOW
+         ====================================================================== -->
+    <section id="section-transactions" class="tab-content-section" style="display: none;">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <h2 class="section-title">Pencatatan Mutasi & Cashflow</h2>
+          <span id="tx-filter-count" class="section-counter">0 Transaksi</span>
+        </div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button class="btn-secondary btn-sm" onclick="window.akhaApp.exportCSV()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>Export CSV / Excel</span>
+          </button>
+          <button class="btn-primary btn-sm" onclick="window.akhaApp.openAddTxModal('expense')">
+            + Tambah Transaksi
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Controls Panel -->
+      <div class="transactions-filter-panel">
+        <div class="filter-group">
+          <!-- Search box -->
+          <div class="search-input-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="tx-search-input" class="search-input" placeholder="Cari catatan, kategori...">
+          </div>
+
+          <!-- Type filter -->
+          <select id="filter-type-select" class="select-filter">
+            <option value="all">Semua Jenis Transaksi</option>
+            <option value="income">🟢 Pemasukan (Income)</option>
+            <option value="expense">🔴 Pengeluaran (Expense)</option>
+            <option value="transfer">🔵 Transfer Antar Akun</option>
+          </select>
+
+          <!-- Account filter -->
+          <select id="filter-account-select" class="select-filter">
+            <option value="all">Semua Rekening & Dompet</option>
+          </select>
+
+          <!-- Period filter -->
+          <select id="filter-period-select" class="select-filter">
+            <option value="this_month">Bulan Ini</option>
+            <option value="last_month">Bulan Lalu</option>
+            <option value="today">Hari Ini</option>
+            <option value="7_days">7 Hari Terakhir</option>
+            <option value="30_days">30 Hari Terakhir</option>
+            <option value="this_year">Tahun Ini</option>
+            <option value="all">Semua Periode</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Transaction List Table -->
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th style="width: 140px;">Tanggal</th>
+              <th>Keterangan & Kategori</th>
+              <th>Akun Rekening</th>
+              <th style="width: 100px;">Tipe</th>
+              <th style="text-align: right; width: 170px;">Nominal (IDR)</th>
+              <th style="text-align: right; width: 90px;">Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="tx-table-body">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SECTION 4: LAPORAN & ANALISIS
+         ====================================================================== -->
+    <section id="section-analytics" class="tab-content-section" style="display: none;">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <h2 class="section-title">Laporan Keuangan & Analisis Cashflow</h2>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <select id="report-period-select" class="select-filter">
+            <option value="this_month">Laporan Bulan Ini</option>
+            <option value="last_month">Laporan Bulan Lalu</option>
+            <option value="30_days">30 Hari Terakhir</option>
+            <option value="this_year">Laporan Tahun Ini</option>
+            <option value="all">Semua Periode</option>
+          </select>
+          <button id="btn-print-report" class="btn-secondary btn-sm">
+            🖨️ Cetak / Simpan PDF
+          </button>
+        </div>
+      </div>
+
+      <!-- Cashflow Statement Summary -->
+      <div class="report-card">
+        <h3 style="font-size: 1.15rem; margin-bottom: 1rem;">Ringkasan Arus Kas Masuk & Keluar</h3>
+        <table class="cashflow-table">
+          <tbody>
+            <tr>
+              <td><strong>Total Pemasukan Kas (Cash Inflow)</strong></td>
+              <td style="text-align: right; color: var(--income); font-weight: 700;" id="report-total-income">Rp 0</td>
+            </tr>
+            <tr>
+              <td><strong>Total Pengeluaran Kas (Cash Outflow & Admin)</strong></td>
+              <td style="text-align: right; color: var(--expense); font-weight: 700;" id="report-total-expense">Rp 0</td>
+            </tr>
+            <tr class="total-row">
+              <td><strong>Arus Kas Bersih (Net Cashflow)</strong></td>
+              <td style="text-align: right; font-size: 1.1rem;" id="report-net-cashflow">Rp 0</td>
+            </tr>
+            <tr>
+              <td><strong>Rasio Tabungan (Savings Rate)</strong></td>
+              <td style="text-align: right; font-weight: 700;" id="report-saving-rate">0%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 2-Column Details: Top Expenses & Wallet Distribution -->
+      <div class="dashboard-grid-2">
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="section-title">Top 5 Pengeluaran Terbesar</h3>
+          </div>
+          <div class="table-responsive" style="border: none; box-shadow: none;">
+            <table class="cashflow-table" style="margin-top: 0;">
+              <thead>
+                <tr>
+                  <th>Catatan</th>
+                  <th>Kategori</th>
+                  <th style="text-align: right;">Jumlah</th>
+                </tr>
+              </thead>
+              <tbody id="report-top-expenses">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="section-title">Distribusi Aset per Akun</h3>
+          </div>
+          <div id="report-wallet-distribution" style="padding-top: 0.5rem;">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         SECTION 5: PENGATURAN & BACKUP
+         ====================================================================== -->
+    <section id="section-settings" class="tab-content-section" style="display: none;">
+      <div class="section-header">
+        <h2 class="section-title">Cadangkan & Kelola Data (Backup)</h2>
+      </div>
+
+      <!-- PWA Install Guide Card -->
+      <div class="chart-card" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, rgba(37,99,235,0.06), rgba(16,185,129,0.06)); border: 1px solid var(--border-focus);">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h3 style="font-size: 1.1rem; color: var(--primary);">📲 Instal AKHAFIN di HP & Tablet</h3>
+            <p style="font-size: 0.88rem; color: var(--text-secondary); margin-top: 0.25rem;">
+              Pasang aplikasi ke layar beranda smartphone atau tablet untuk akses cepat seperti aplikasi bawaan (Android & iPad/iPhone didukung).
+            </p>
+          </div>
+          <button class="btn-primary" onclick="window.akhaApp.openInstallGuideModal()">
+            <span>Buka Panduan Instalasi</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="dashboard-grid-2">
+        <!-- Backup & Restore Box -->
+        <div class="chart-card">
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Cadangan & Pemulihan (JSON)</h3>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+            Data AKHAFIN tersimpan di peramban (browser) Anda secara privat. Unduh cadangan rutin agar data Anda selalu aman dan dapat dipindahkan antar komputer atau handphone.
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+            <button id="btn-export-json" class="btn-primary" style="justify-content: flex-start;">
+              <span>💾</span>
+              <span>Unduh File Cadangan (Backup JSON)</span>
+            </button>
+
+            <label class="btn-secondary" style="justify-content: flex-start; cursor: pointer;">
+              <span>📂</span>
+              <span>Pulihkan dari File Backup JSON</span>
+              <input type="file" id="import-file-input" accept=".json" style="display: none;">
+            </label>
+
+            <button id="btn-export-csv" class="btn-secondary" style="justify-content: flex-start;">
+              <span>📊</span>
+              <span>Export Rekap Mutasi ke Excel (.CSV)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Sample Data & Reset Box -->
+        <div class="chart-card">
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Data Contoh & Reset</h3>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+            Ingin mencoba fitur dengan data simulasi atau menghapus semua data untuk mulai dari awal?
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 0.85rem;">
+            <button id="btn-reset-sample" class="btn-secondary" style="justify-content: flex-start;">
+              <span>🔄</span>
+              <span>Muat Ulang Data Contoh Indonesia (BCA, Mandiri, GoPay, DANA)</span>
+            </button>
+
+            <button id="btn-reset-empty" class="btn-secondary btn-danger" style="justify-content: flex-start; background: #ef4444; color: white;">
+              <span>🗑️</span>
+              <span>Hapus Semua Data & Mulai dari Nol</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subscription & Legal Info Box -->
+      <div class="dashboard-grid-2" style="margin-top: 1.5rem;">
+        <div class="chart-card">
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: #f59e0b;">👑 Status Berlangganan AKHAFIN PRO</h3>
+          <p id="settings-sub-status" style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
+            Paket Aktif: <strong>Gratis (Free Starter)</strong>
+          </p>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button class="btn-primary" style="background: linear-gradient(135deg, #f59e0b, #d97706);" onclick="window.akhaApp.openProModal()">
+              <span>Kelola / Upgrade Langganan PRO</span>
+            </button>
+            <button class="btn-secondary" onclick="window.akhaApp.restorePurchases()">
+              <span>Pulihkan Pembelian (Restore)</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Legalitas &amp; Kebijakan (Google Play)</h3>
+          <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.85rem;">
+            Aplikasi AKHAFIN mematuhi seluruh panduan privasi dan keamanan data pengguna Google Play Developer Policy.
+          </p>
+          <div style="display: flex; flex-direction: column; gap: 0.45rem;">
+            <a href="kebijakan-privasi.html" target="_blank" style="font-size: 0.88rem; color: var(--primary); font-weight: 600; display: inline-flex; align-items: center; gap: 0.35rem;">
+              <span>📄</span> <span>Kebijakan Privasi (Privacy Policy) ↗</span>
+            </a>
+            <a href="syarat-ketentuan.html" target="_blank" style="font-size: 0.88rem; color: var(--primary); font-weight: 600; display: inline-flex; align-items: center; gap: 0.35rem;">
+              <span>⚖️</span> <span>Syarat &amp; Ketentuan Layanan (Terms of Service) ↗</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- About App Box -->
+      <div class="chart-card" style="margin-top: 1.5rem;">
+        <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Tentang Aplikasi AKHAFIN</h3>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;">
+          <strong>AKHAFIN (Akuntansi & Keuangan Finansial)</strong> adalah aplikasi pencatat keuangan modern yang dirancang khusus untuk memonitor arus kas (cashflow), mengelola sisa saldo riil, serta melacak total saldo di setiap rekening bank dan dompet digital (e-wallet) secara terpusat. Mendukung instalasi Google Play Store dan In-App Subscriptions.
+        </p>
+        <div style="margin-top: 1rem; font-size: 0.82rem; color: var(--text-muted);">
+          Versi: 1.0.0 (Play Store Ready) • Dibuat untuk pengelolaan finansial yang lebih tertib & transparan.
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================================
+       MODAL 1: CATAT / EDIT TRANSAKSI
+       ====================================================================== -->
+  <div id="tx-modal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 id="tx-modal-title" class="modal-title">Catat Transaksi</h3>
+        <button class="modal-close-btn modal-close-trigger" aria-label="Tutup">✕</button>
+      </div>
+
+      <form id="tx-form">
+        <div class="modal-body">
+          <!-- Transaction Type Toggle -->
+          <div class="type-toggle-group">
+            <button type="button" class="type-toggle-btn active income" data-type="income">
+              <span>🟢 Pemasukan</span>
+            </button>
+            <button type="button" class="type-toggle-btn expense" data-type="expense">
+              <span>🔴 Pengeluaran</span>
+            </button>
+            <button type="button" class="type-toggle-btn transfer" data-type="transfer">
+              <span>🔵 Transfer Akun</span>
+            </button>
+          </div>
+
+          <!-- Nominal Amount -->
+          <div class="form-group">
+            <label class="form-label" for="tx-amount">Nominal Jumlah (Rp)*</label>
+            <div class="amount-input-wrap">
+              <span class="currency-prefix">Rp</span>
+              <input type="text" id="tx-amount" class="form-input amount-input" placeholder="0" required autofocus>
+            </div>
+          </div>
+
+          <!-- Source Account -->
+          <div class="form-group">
+            <label class="form-label" id="label-from-account" for="tx-account">Rekening / E-Wallet*</label>
+            <select id="tx-account" class="form-select" required></select>
+          </div>
+
+          <!-- Destination Account (Only for Transfer) -->
+          <div id="form-group-to-account" class="form-group" style="display: none;">
+            <label class="form-label" for="tx-to-account">Rekening / E-Wallet Tujuan (Penerima)*</label>
+            <select id="tx-to-account" class="form-select"></select>
+          </div>
+
+          <!-- Admin Fee (Only for Transfer) -->
+          <div id="form-group-admin-fee" class="form-group" style="display: none;">
+            <label class="form-label" for="tx-admin-fee">Biaya Admin Transfer (Opsional)</label>
+            <div class="amount-input-wrap">
+              <span class="currency-prefix">Rp</span>
+              <input type="text" id="tx-admin-fee" class="form-input" style="padding-left: 3rem;" placeholder="0">
+            </div>
+          </div>
+
+          <!-- Category -->
+          <div class="form-group">
+            <label class="form-label" for="tx-category">Kategori Transaksi</label>
+            <input type="text" id="tx-category" list="category-list" class="form-input" placeholder="Pilih atau ketik kategori baru...">
+            <datalist id="category-list"></datalist>
+          </div>
+
+          <!-- Date & Time -->
+          <div class="form-group">
+            <label class="form-label" for="tx-date">Tanggal & Waktu</label>
+            <input type="datetime-local" id="tx-date" class="form-input" required>
+          </div>
+
+          <!-- Notes -->
+          <div class="form-group">
+            <label class="form-label" for="tx-notes">Keterangan / Catatan Tambahan</label>
+            <input type="text" id="tx-notes" class="form-input" placeholder="Contoh: Belanja bulanan, Bensin motor, Gaji...">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary modal-close-trigger">Batal</button>
+          <button type="submit" class="btn-primary">Simpan Transaksi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 2: TAMBAH / EDIT AKUN BANK & E-WALLET
+       ====================================================================== -->
+  <div id="account-modal" class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 id="account-modal-title" class="modal-title">Tambah Rekening / E-Wallet</h3>
+        <button class="modal-close-btn modal-close-trigger" aria-label="Tutup">✕</button>
+      </div>
+
+      <form id="account-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="acc-name">Nama Akun / Rekening*</label>
+            <input type="text" id="acc-name" class="form-input" placeholder="Contoh: BCA Tabungan, GoPay Belanja, Kas Toko" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="acc-provider">Penyedia Bank / E-Wallet*</label>
+            <select id="acc-provider" class="form-select">
+              <optgroup label="Bank">
+                <option value="BCA">Bank BCA</option>
+                <option value="Mandiri">Bank Mandiri</option>
+                <option value="BRI">Bank BRI</option>
+                <option value="BNI">Bank BNI</option>
+                <option value="Jago">Bank Jago</option>
+                <option value="SeaBank">SeaBank</option>
+                <option value="Jenius">Jenius (BTPN)</option>
+                <option value="BSI">Bank Syariah Indonesia (BSI)</option>
+                <option value="CIMB">CIMB Niaga</option>
+                <option value="Blu">Blu by BCA Digital</option>
+              </optgroup>
+              <optgroup label="E-Wallet">
+                <option value="GoPay">GoPay</option>
+                <option value="OVO">OVO</option>
+                <option value="DANA">DANA</option>
+                <option value="ShopeePay">ShopeePay</option>
+                <option value="LinkAja">LinkAja</option>
+              </optgroup>
+              <optgroup label="Lainnya">
+                <option value="Cash">Uang Tunai / Kas Fisik</option>
+                <option value="Other">Lainnya / Akun Kustom</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="acc-type">Jenis Akun</label>
+            <select id="acc-type" class="form-select">
+              <option value="bank">Rekening Bank</option>
+              <option value="ewallet">E-Wallet Digital</option>
+              <option value="cash">Uang Tunai / Kas</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="acc-number">Nomor Rekening / No HP Terdaftar</label>
+            <input type="text" id="acc-number" class="form-input" placeholder="Contoh: 821-049-2811 atau 0812-3456-7890">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="acc-initial-balance">Saldo Awal (Rp)</label>
+            <div class="amount-input-wrap">
+              <span class="currency-prefix">Rp</span>
+              <input type="text" id="acc-initial-balance" class="form-input" style="padding-left: 3rem;" placeholder="0">
+            </div>
+            <small style="font-size: 0.75rem; color: var(--text-muted);">Saldo awal saat akun pertama kali didaftarkan.</small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="acc-notes">Catatan Tambahan (Opsional)</label>
+            <input type="text" id="acc-notes" class="form-input" placeholder="Contoh: Dipakai khusus gaji dan tabungan">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary modal-close-trigger">Batal</button>
+          <button type="submit" class="btn-primary">Simpan Akun</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 3: PANDUAN INSTAL DI HP & TABLET
+       ====================================================================== -->
+  <div id="install-guide-modal" class="modal-overlay">
+    <div class="modal-container" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 class="modal-title">📲 Panduan Instal AKHAFIN di HP & Tablet</h3>
+        <button class="modal-close-btn modal-close-trigger" aria-label="Tutup">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5;">
+          Aplikasi AKHAFIN berbasis teknologi <strong>PWA (Progressive Web App)</strong>. Anda dapat menginstalnya secara langsung tanpa perlu download dari Google Play Store / Apple App Store!
+        </p>
+
+        <!-- Scan QR Code Langsung -->
+        <div style="background: var(--bg-tertiary); border: 2px dashed var(--primary); border-radius: var(--radius-lg); padding: 1.25rem; text-align: center; margin-bottom: 1.25rem;">
+          <h4 style="font-size: 1rem; color: var(--primary); margin-bottom: 0.35rem;">📷 Cara Tercepat: Scan QR Code dengan Kamera HP</h4>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.85rem;">
+            Arahkan kamera HP Anda ke barcode ini untuk langsung membuka aplikasi:
+          </p>
+          <div style="display: flex; justify-content: center; margin-bottom: 0.75rem;">
+            <canvas id="qr-canvas" style="background: white; padding: 8px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></canvas>
+          </div>
+          <div id="qr-url-text" style="font-family: monospace; font-size: 0.95rem; font-weight: 700; color: var(--primary); background: var(--bg-card); padding: 0.4rem 0.8rem; border-radius: 6px; display: inline-block;">
+            http://192.168.1.6:8080
+          </div>
+        </div>
+
+        <!-- Cara di Android Phone & Tablet -->
+        <div style="margin-top: 0.5rem;">
+          <h4 style="font-size: 0.95rem; margin-bottom: 0.65rem; color: #10b981; display: flex; align-items: center; gap: 0.4rem;">
+            <span>🤖</span> <span>Untuk HP & Tablet Android (Google Chrome):</span>
+          </h4>
+          <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+            <div class="guide-step-card">
+              <div class="guide-step-number">1</div>
+              <div class="guide-step-text">
+                <h5>Buka AKHAFIN di Google Chrome</h5>
+                <p>Hubungkan HP ke Wi-Fi yang sama dengan komputer atau buka web app ini.</p>
+              </div>
+            </div>
+            <div class="guide-step-card">
+              <div class="guide-step-number">2</div>
+              <div class="guide-step-text">
+                <h5>Klik Tombol 'Pasang' atau Menu Titik Tiga (⋮)</h5>
+                <p>Ketuk tombol <strong>"Pasang Sekarang"</strong> di banner atas, atau ketuk menu titik tiga <strong>(⋮)</strong> di pojok kanan atas Chrome.</p>
+              </div>
+            </div>
+            <div class="guide-step-card">
+              <div class="guide-step-number">3</div>
+              <div class="guide-step-text">
+                <h5>Pilih 'Install Aplikasi' / 'Tambahkan ke Layar Utama'</h5>
+                <p>Ikon <strong>AKHAFIN</strong> akan langsung muncul di Home Screen HP Anda seperti aplikasi native!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cara di iPhone & iPad -->
+        <div style="margin-top: 1rem;">
+          <h4 style="font-size: 0.95rem; margin-bottom: 0.65rem; color: #3b82f6; display: flex; align-items: center; gap: 0.4rem;">
+            <span>🍎</span> <span>Untuk iPhone & iPad (Safari Browser):</span>
+          </h4>
+          <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+            <div class="guide-step-card">
+              <div class="guide-step-number">1</div>
+              <div class="guide-step-text">
+                <h5>Buka AKHAFIN di Browser Safari</h5>
+                <p>Pastikan membuka menggunakan browser bawaan Safari di iOS / iPadOS.</p>
+              </div>
+            </div>
+            <div class="guide-step-card">
+              <div class="guide-step-number">2</div>
+              <div class="guide-step-text">
+                <h5>Ketuk Tombol Bagikan (Share)</h5>
+                <p>Ketuk ikon <strong>Bagikan / Share</strong> (ikon kotak dengan tanda panah mengarah ke atas ⎋ di bilah bawah Safari).</p>
+              </div>
+            </div>
+            <div class="guide-step-card">
+              <div class="guide-step-number">3</div>
+              <div class="guide-step-text">
+                <h5>Pilih 'Add to Home Screen' ('Tambahkan ke Layar Utama')</h5>
+                <p>Gulir ke bawah pada menu, ketuk <strong>Add to Home Screen</strong>, lalu tekan <strong>Add</strong>. Selesai!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Server Info Notice -->
+        <div style="background: var(--bg-tertiary); padding: 0.85rem; border-radius: var(--radius-md); border-left: 4px solid var(--primary); font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.5rem;">
+          💡 <strong>Tips Buka dari Laptop ke HP:</strong> Jalankan file <code>Jalankan_Server_HP.bat</code> di folder komputer Anda, lalu buka alamat IP lokal yang tertera di browser HP Anda.
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-primary modal-close-trigger">Mengerti, Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL 4: LANGGANAN AKHAFIN PRO (PAYWALL)
+       ====================================================================== -->
+  <div id="pro-modal" class="modal-overlay">
+    <div class="modal-container" style="max-width: 620px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="display: flex; align-items: center; gap: 0.4rem; color: #f59e0b;">
+          <span>👑</span> <span>AKHAFIN PRO</span>
+        </h3>
+        <button class="modal-close-btn modal-close-trigger" aria-label="Tutup">✕</button>
+      </div>
+
+      <div class="modal-body" style="padding-top: 0.5rem;">
+        <div class="paywall-header">
+          <div class="paywall-crown">👑</div>
+          <h2 class="paywall-title">Buka Akses Finansial Tanpa Batas</h2>
+          <p class="paywall-subtitle">
+            Kendalikan keuangan Anda seutuhnya dengan fitur eksklusif AKHAFIN PRO. Bebas batas akun, anggaran pintar, dan proteksi biometrik.
+          </p>
+        </div>
+
+        <!-- 3 Pilihan Paket Langganan -->
+        <div class="pricing-plans-grid">
+          <!-- Bulanan -->
+          <div class="plan-card" data-plan="monthly" onclick="window.akhaApp.selectPlan('monthly')">
+            <div>
+              <div class="plan-name">Bulanan</div>
+              <div class="plan-price">Rp 19rb</div>
+              <div class="plan-period">per bulan</div>
+            </div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.5rem;">Fleksibel dibatalkan kapan saja</div>
+          </div>
+
+          <!-- Tahunan (Paling Populer) -->
+          <div class="plan-card selected" data-plan="yearly" onclick="window.akhaApp.selectPlan('yearly')">
+            <span class="plan-popular-pill">Paling Hemat</span>
+            <div>
+              <div class="plan-name">Tahunan</div>
+              <div class="plan-price">Rp 149rb</div>
+              <div class="plan-period">per tahun (~Rp 12rb/bln)</div>
+            </div>
+            <div class="plan-savings-tag">HEMAT 35%</div>
+          </div>
+
+          <!-- Lifetime -->
+          <div class="plan-card" data-plan="lifetime" onclick="window.akhaApp.selectPlan('lifetime')">
+            <div>
+              <div class="plan-name">Seumur Hidup</div>
+              <div class="plan-price">Rp 299rb</div>
+              <div class="plan-period">sekali bayar selamanya</div>
+            </div>
+            <div style="font-size: 0.72rem; color: #f59e0b; font-weight: 700; margin-top: 0.5rem;">Akses VIP Permanen</div>
+          </div>
+        </div>
+
+        <!-- Feature Comparison Matrix -->
+        <div class="features-matrix">
+          <div class="matrix-item">
+            <span class="matrix-label"><span>🏦</span> Jumlah Rekening &amp; E-Wallet</span>
+            <div class="matrix-status">
+              <span class="matrix-free">Maks 3</span>
+              <span>➔</span>
+              <span class="matrix-pro">UNLIMITED</span>
+            </div>
+          </div>
+          <div class="matrix-item">
+            <span class="matrix-label"><span>🎯</span> Anggaran &amp; Limit Kategori (Budgeting)</span>
+            <div class="matrix-status">
+              <span class="matrix-free">Terkunci</span>
+              <span>➔</span>
+              <span class="matrix-pro">AKTIF</span>
+            </div>
+          </div>
+          <div class="matrix-item">
+            <span class="matrix-label"><span>📊</span> Ekspor Excel (.CSV) &amp; Cetak PDF Resmi</span>
+            <div class="matrix-status">
+              <span class="matrix-free">1x Sebulan</span>
+              <span>➔</span>
+              <span class="matrix-pro">UNLIMITED</span>
+            </div>
+          </div>
+          <div class="matrix-item">
+            <span class="matrix-label"><span>🔒</span> Kunci Keamanan PIN &amp; Sidik Jari</span>
+            <div class="matrix-status">
+              <span class="matrix-free">❌</span>
+              <span>➔</span>
+              <span class="matrix-pro">AKTIF</span>
+            </div>
+          </div>
+          <div class="matrix-item">
+            <span class="matrix-label"><span>⚡</span> Bebas Iklan &amp; Prioritas Fitur Baru</span>
+            <div class="matrix-status">
+              <span class="matrix-free">Standar</span>
+              <span>➔</span>
+              <span class="matrix-pro">VIP ACCESS</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Subscribe Button -->
+        <div style="display: flex; flex-direction: column; gap: 0.65rem;">
+          <button id="btn-subscribe-action" class="btn-primary" style="background: linear-gradient(135deg, #f59e0b, #d97706); padding: 0.85rem; font-size: 1rem; font-weight: 800;" onclick="window.akhaApp.processSubscription()">
+            <span>👑 Langganan Sekarang (Google Play)</span>
+          </button>
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;">
+            <button class="btn-secondary btn-sm" onclick="window.akhaApp.activateFreeTrial()" style="flex: 1;">
+              <span>⚡ Coba Gratis 7 Hari</span>
+            </button>
+            <button class="btn-secondary btn-sm" onclick="window.akhaApp.restorePurchases()" style="flex: 1;">
+              <span>🔄 Pulihkan Pembelian</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Promo Code Section -->
+        <div style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border-light); display: flex; align-items: center; gap: 0.5rem;">
+          <input type="text" id="promo-code-input" class="form-input" placeholder="Punya Kode Promo / Lisensi PRO?" style="text-transform: uppercase; font-size: 0.85rem;">
+          <button class="btn-secondary btn-sm" onclick="window.akhaApp.redeemPromoCode()">Gunakan</button>
+        </div>
+
+        <p style="font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 0.5rem;">
+          Dapat dibatalkan kapan saja via Google Play Store. Dengan melanjutkan, Anda menyetujui <a href="syarat-ketentuan.html" target="_blank" style="color:var(--primary);">Syarat &amp; Ketentuan</a> serta <a href="kebijakan-privasi.html" target="_blank" style="color:var(--primary);">Kebijakan Privasi</a> kami.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-nav" aria-label="Navigasi Bawah Mobile">
+    <div class="mobile-nav-items">
+      <button class="mobile-nav-btn active" data-tab="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+        <span>Dashboard</span>
+      </button>
+      <button class="mobile-nav-btn" data-tab="accounts">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+        <span>Akun</span>
+      </button>
+      <button class="mobile-nav-btn" data-tab="transactions">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        <span>Mutasi</span>
+      </button>
+      <button class="mobile-nav-btn" data-tab="analytics">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <span>Laporan</span>
+      </button>
+      <button class="mobile-nav-btn" data-tab="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <span>Backup</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="sample-data.js"></script>
+  <script src="chart-engine.js"></script>
+  <script src="qrcode.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // Update print date
+    document.getElementById('print-date').textContent = new Date().toLocaleDateString('id-ID', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  </script>
+</body>
+</html>
